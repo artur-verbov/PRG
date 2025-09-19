@@ -1,1 +1,98 @@
-test text
+namespace virtuální_čtverec
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            tlacitka();
+        }
+
+        private void klik(object sender, EventArgs e)
+        {
+            Button bt = (Button)sender;
+            int cislo = Convert.ToInt16(bt.Text);
+            cislo += 1;
+            if (cislo > 9)
+                cislo = 1;
+            bt.Text = cislo.ToString();
+            kontrola();
+        }
+        Button[,] bts = new Button[3, 3];
+        private void tlacitka()
+        {
+            int i, j;
+            int velikost = 50;
+            for (j = 0; j < 3; j++)
+            {
+                for (i = 0; i < 3; i++)
+                {
+
+                    Button bt = new Button();
+                    bt.Width = velikost;
+                    bt.Height = velikost;
+                    bt.Top = j * velikost;
+                    bt.Left = i * velikost;
+                    bt.Name = "b" + i + "" + j;
+                    bt.Text = "1";
+                    bt.Click += new System.EventHandler(klik);
+                    panel1.Controls.Add(bt);
+                    bts[j, i] = bt;
+                }
+            }
+            int velikost1 = 50;
+            int velikost2 = 50;
+
+        }
+        
+        private void kontrola()
+        {
+            int c11 = Convert.ToInt16(bts[0, 0].Text);
+            int c12 = Convert.ToInt16(bts[0, 1].Text);
+            int c13 = Convert.ToInt16(bts[0, 2].Text);
+            int c21 = Convert.ToInt16(bts[1, 0].Text);
+            int c22 = Convert.ToInt16(bts[1, 1].Text);
+            int c23 = Convert.ToInt16(bts[1, 2].Text);
+            int c31 = Convert.ToInt16(bts[2, 0].Text);
+            int c32 = Convert.ToInt16(bts[2, 1].Text);
+            int c33 = Convert.ToInt16(bts[2, 2].Text);
+
+            if ((c11 + c12 + c13 == 15) && (c12 != c11) && (c12 != c13))
+                label4.BackColor = Color.Green;
+            else
+                label4.BackColor = Color.Red;
+            if ((c21 + c22 + c23 == 15) && (c22 != c21) && (c22 != c23))
+                label5.BackColor = Color.Green;
+            else
+                label5.BackColor = Color.Red;
+            if ((c31 + c32 + c33 == 15) && (c32 != c31) && (c32 != c33))
+                label6.BackColor = Color.Green;
+            else
+                label6.BackColor = Color.Red;
+            if ((c11 + c21 + c31 == 15) && (c21 != c11) && (c21 != c31))
+                label1.BackColor = Color.Green;
+            else
+                label1.BackColor = Color.Red;
+            if ((c21 + c22 + c32 == 15) && (c22 != c21) && (c22 != c23))
+                label2.BackColor = Color.Green;
+            else
+                label2.BackColor = Color.Red;
+            if ((c31 + c32 + c33 == 15) && (c32 != c31) && (c32 != c33))
+                label3.BackColor = Color.Green;
+            else
+                label3.BackColor = Color.Red;
+            if ((c11 + c22 + c33 == 15) && (c22 != c11) && (c22 != c33))
+                label7.BackColor = Color.Green;
+            else
+                label7.BackColor = Color.Red;
+            if ((c13 + c22 + c31 == 15) && (c22 != c13) && (c22 != c31))
+                label8.BackColor = Color.Green;
+            else
+                label8.BackColor = Color.Red;
+        }
+    }
+}
