@@ -1,14 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "6HoCGQCreq4TRc7oJFWn6suCpfrKHhXL3WUaeVTybIthUm+qqqcfnb/NmItNJmKHnOmiT5Pa/WNsdpL0S9yF5w==",
+  "dgSpecHash": "XUFZAoI9h++CN1dvReozvQiEAHGobejkflCb9u86dgPFtWvyPuWM1NSHkxXjPZzm9QdcCo6r9JG39sMLh0ScVA==",
   "success": true,
-  "projectFilePath": "H:\\3 E\\PRG\\Hrad\\hrad\\hrad\\hrad.csproj",
+  "projectFilePath": "H:\\Programování 3\\hrad\\hrad\\hrad.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\verbovshchuka\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
-    "C:\\Users\\verbovshchuka\\.nuget\\packages\\qrcoder\\1.6.0\\qrcoder.1.6.0.nupkg.sha512",
-    "C:\\Users\\verbovshchuka\\.nuget\\packages\\stub.system.data.sqlite.core.netstandard\\1.0.119\\stub.system.data.sqlite.core.netstandard.1.0.119.nupkg.sha512",
-    "C:\\Users\\verbovshchuka\\.nuget\\packages\\system.data.sqlite.core\\1.0.119\\system.data.sqlite.core.1.0.119.nupkg.sha512",
-    "C:\\Users\\verbovshchuka\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512"
+    "C:\\Users\\havlinj\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\havlinj\\.nuget\\packages\\qrcoder\\1.6.0\\qrcoder.1.6.0.nupkg.sha512",
+    "C:\\Users\\havlinj\\.nuget\\packages\\stub.system.data.sqlite.core.netstandard\\1.0.119\\stub.system.data.sqlite.core.netstandard.1.0.119.nupkg.sha512",
+    "C:\\Users\\havlinj\\.nuget\\packages\\system.data.sqlite.core\\1.0.119\\system.data.sqlite.core.1.0.119.nupkg.sha512",
+    "C:\\Users\\havlinj\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512"
   ],
   "logs": []
 }
