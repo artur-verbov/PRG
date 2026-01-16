@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XUFZAoI9h++CN1dvReozvQiEAHGobejkflCb9u86dgPFtWvyPuWM1NSHkxXjPZzm9QdcCo6r9JG39sMLh0ScVA==",
+  "dgSpecHash": "bF7N5oUlS7OaH3e+QdACI/pNbgTPm2crA/lzkO1u8bq4abH30fUf1h2PlJ943vfvbPqJi+qNjSnWOBiYueuu8g==",
   "success": true,
-  "projectFilePath": "H:\\Programování 3\\hrad\\hrad\\hrad.csproj",
+  "projectFilePath": "H:\\Programování 3\\PRG-master\\hrad\\hrad.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\havlinj\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\havlinj\\.nuget\\packages\\qrcoder\\1.6.0\\qrcoder.1.6.0.nupkg.sha512",

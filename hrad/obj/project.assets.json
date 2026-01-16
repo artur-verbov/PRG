@@ -239,11 +239,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "H:\\Programování 3\\hrad\\hrad\\hrad.csproj",
+      "projectUniqueName": "H:\\Programování 3\\PRG-master\\hrad\\hrad.csproj",
       "projectName": "hrad",
-      "projectPath": "H:\\Programování 3\\hrad\\hrad\\hrad.csproj",
+      "projectPath": "H:\\Programování 3\\PRG-master\\hrad\\hrad.csproj",
       "packagesPath": "C:\\Users\\havlinj\\.nuget\\packages\\",
-      "outputPath": "H:\\Programování 3\\hrad\\hrad\\obj\\",
+      "outputPath": "H:\\Programování 3\\PRG-master\\hrad\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\havlinj\\AppData\\Roaming\\NuGet\\NuGet.Config",

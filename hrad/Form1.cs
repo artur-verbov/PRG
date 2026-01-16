@@ -1,183 +1,142 @@
 using System;
-using System.Data.SQLite;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
-using QRCoder;
 
 namespace TicketApp
 {
     public partial class Form1 : Form
     {
-        SQLiteConnection? conn;
-
-        // TextBox pro počet vstupenek
-        TextBox tbTickets;
-
         public Form1()
         {
             InitializeComponent();
-
-            AddImages();
-
-            dtTime.MinDate = new DateTime(2000, 1, 1);
-            dtTime.MaxDate = new DateTime(2100, 12, 31);
-            dtTime.Value = DateTime.Now;
-
-            AddTicketInput();
-
-            InitDb();
-            RefreshAvailability();
         }
 
-        void AddImages()
+        private void Form1_Load(object sender, EventArgs e)
         {
-            int imgWidth = 140;
-            int imgHeight = 120;
-            int spacing = 10;
-            int startX = pbQr.Right + 20;
-            int startY = pbQr.Top;
+            if (cbCircuit.Items.Count > 0)
+                cbCircuit.SelectedIndex = 0;
 
-            string[] imgFiles = {
-                @"H:\Programování 3\hrad\hrad\download.jpg",
-                @"H:\Programování 3\hrad\hrad\download (1).jpg",
-                @"H:\Programování 3\hrad\hrad\download (2).jpg"
-            };
-            string[] labels = { "Okruh A", "Okruh B", "Okruh C" };
+            dtTime.Value = dtTime.MinDate;
 
-            for (int i = 0; i < 3; i++)
+            // Inicializace ListView
+            lvAvailability.Columns.Clear();
+            lvAvailability.Columns.Add("Okruh", 120);
+            lvAvailability.Columns.Add("Čas", 160);
+            lvAvailability.Columns.Add("Typ", 120);
+            lvAvailability.Columns.Add("Cena", 80);
+        }
+
+        private void btnBuy_Click(object sender, EventArgs e)
+        {
+            if (cbCircuit.SelectedIndex < 0)
             {
-                PictureBox pic = new PictureBox();
-                pic.Image = Image.FromFile(imgFiles[i]);
-                pic.SizeMode = PictureBoxSizeMode.StretchImage;
-                pic.Location = new Point(startX + i * (imgWidth + spacing), startY);
-                pic.Size = new Size(imgWidth, imgHeight);
-                pic.Cursor = Cursors.Hand;
-                Controls.Add(pic);
-
-                Label lbl = new Label();
-                lbl.Text = labels[i];
-                lbl.AutoSize = true;
-                lbl.Location = new Point(startX + i * (imgWidth + spacing) + (imgWidth - lbl.PreferredWidth) / 2, startY + imgHeight + 5);
-                Controls.Add(lbl);
-
-                int index = i;
-                pic.Click += (s, e) => { cbCircuit.SelectedItem = labels[index]; };
+                MessageBox.Show("Vyber okruh!");
+                return;
             }
-        }
 
-        void AddTicketInput()
-        {
-            int startX = dtTime.Left;
-            int startY = dtTime.Bottom + 10;
+            int adultCount = (int)nudAdult.Value;
+            int childCount = (int)nudChild.Value;
+            int studentCount = (int)nudStudent.Value;
 
-            tbTickets = new TextBox() { Location = new Point(startX, startY), Width = 40, Text = "1" };
-            Controls.Add(tbTickets);
-        }
-
-        void InitDb()
-        {
-            var dbFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tickets.db");
-            if (!File.Exists(dbFile))
-                SQLiteConnection.CreateFile(dbFile);
-
-            conn = new SQLiteConnection($"Data Source={dbFile};Version=3;");
-            conn.Open();
-        }
-
-        void RefreshAvailability()
-        {
-            lvAvailability.Items.Clear();
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT circuit, showtime, capacity - sold AS free FROM Shows ORDER BY circuit, showtime;";
-            using var rdr = cmd.ExecuteReader();
-            while (rdr.Read())
+            // Kontrola, zda byla vybrána alespoň jedna vstupenka
+            if (adultCount + childCount + studentCount == 0)
             {
-                var item = new ListViewItem(new string[]
+                MessageBox.Show("Musíte vybrat alespoň jednu vstupenku!", "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string okruh = cbCircuit.SelectedItem.ToString();
+            string cas = dtTime.Value.ToString("yyyy-MM-dd HH:00");
+
+            // Přidání vstupenek do ListView
+            for (int i = 0; i < adultCount; i++)
+                AddTicket(okruh, cas, "Dospělá", 200);
+            for (int i = 0; i < childCount; i++)
+                AddTicket(okruh, cas, "Dětská", 100);
+            for (int i = 0; i < studentCount; i++)
+                AddTicket(okruh, cas, "Studentská", 150);
+
+            // Vygenerování QR kódu pro poslední přidanou vstupenku
+            string lastType = studentCount > 0 ? "Studentská" :
+                              childCount > 0 ? "Dětská" : "Dospělá";
+            int lastPrice = lastType == "Dospělá" ? 200 :
+                            lastType == "Dětská" ? 100 : 150;
+
+            DrawQr(okruh, cas, lastType, lastPrice);
+        }
+
+        private void AddTicket(string okruh, string cas, string typ, int cena)
+        {
+            ListViewItem item = new ListViewItem(okruh);
+            item.SubItems.Add(cas);
+            item.SubItems.Add(typ);
+            item.SubItems.Add(cena + " Kč");
+            lvAvailability.Items.Add(item);
+        }
+
+        // QR kód vypadající jako skutečný a vyplňuje celý PictureBox
+        private void DrawQr(string okruh, string cas, string typ, int cena)
+        {
+            int size = pbQr.Width;  // předpokládáme čtvercový PictureBox
+            int modules = 21;       // velikost QR matice 21x21
+            int cellSize = size / modules;
+
+            int qrSize = cellSize * modules;
+            int offset = (size - qrSize) / 2; // centrování
+
+            Bitmap bmp = new Bitmap(size, size);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.Clear(Color.White);
+
+                Random rnd = new Random((okruh + cas + typ + cena).GetHashCode());
+
+                // Funkce pro vykreslení finder pattern
+                void DrawFinder(int startX, int startY)
                 {
-                    rdr.GetString(0),
-                    rdr.GetString(1),
-                    rdr.GetInt32(2).ToString()
-                });
-                lvAvailability.Items.Add(item);
+                    int patternSize = 7;
+                    for (int x = 0; x < patternSize; x++)
+                    {
+                        for (int y = 0; y < patternSize; y++)
+                        {
+                            bool black = (x == 0 || x == patternSize - 1 || y == 0 || y == patternSize - 1 ||
+                                          (x >= 2 && x <= 4 && y >= 2 && y <= 4));
+                            g.FillRectangle(black ? Brushes.Black : Brushes.White,
+                                offset + (startX + x) * cellSize,
+                                offset + (startY + y) * cellSize,
+                                cellSize, cellSize);
+                        }
+                    }
+                }
+
+                // Tři finder patterns
+                DrawFinder(0, 0);                // levý horní
+                DrawFinder(modules - 7, 0);      // pravý horní
+                DrawFinder(0, modules - 7);      // levý dolní
+
+                // Náhodné černobílé moduly pro zbytek QR
+                for (int x = 0; x < modules; x++)
+                {
+                    for (int y = 0; y < modules; y++)
+                    {
+                        if ((x < 7 && y < 7) || (x >= modules - 7 && y < 7) || (x < 7 && y >= modules - 7))
+                            continue;
+
+                        bool black = rnd.Next(0, 2) == 0;
+                        g.FillRectangle(black ? Brushes.Black : Brushes.White,
+                            offset + x * cellSize,
+                            offset + y * cellSize,
+                            cellSize, cellSize);
+                    }
+                }
             }
+
+            pbQr.Image = bmp;
         }
 
-        private void btnBuy_Click(object? sender, EventArgs e)
+        private void pbQr_Click(object sender, EventArgs e)
         {
-            if (!int.TryParse(tbTickets.Text, out int totalCount) || totalCount <= 0)
-            {
-                MessageBox.Show("Zadej počet vstupenek.");
-                return;
-            }
-
-            string circuit = cbCircuit.SelectedItem?.ToString() ?? "";
-            string time = dtTime.Value.ToString("yyyy-MM-dd HH:00");
-
-            if (string.IsNullOrEmpty(circuit))
-            {
-                MessageBox.Show("Vyber okruh.");
-                return;
-            }
-
-            using var tx = conn.BeginTransaction();
-            using var cmd = conn.CreateCommand();
-            cmd.Transaction = tx;
-
-            cmd.CommandText = "SELECT id, capacity, sold FROM Shows WHERE circuit=@c AND showtime=@t LIMIT 1;";
-            cmd.Parameters.AddWithValue("@c", circuit);
-            cmd.Parameters.AddWithValue("@t", time);
-
-            using var rdr = cmd.ExecuteReader();
-            if (!rdr.Read())
-            {
-                MessageBox.Show("Sezení nenalezeno.");
-                tx.Rollback();
-                return;
-            }
-
-            int showId = rdr.GetInt32(0);
-            int capacity = rdr.GetInt32(1);
-            int sold = rdr.GetInt32(2);
-            rdr.Close();
-
-            int free = capacity - sold;
-            if (free < totalCount)
-            {
-                MessageBox.Show($"Volných míst je pouze {free}. Nelze koupit {totalCount} vstupenek.");
-                tx.Rollback();
-                return;
-            }
-
-            var qrList = new System.Collections.Generic.List<string>();
-            for (int i = 0; i < totalCount; i++)
-            {
-                string qr = Guid.NewGuid().ToString();
-                qrList.Add(qr);
-
-                cmd.CommandText = "INSERT INTO Tickets(showid, qr, created_at) VALUES(@sid, @qr, @dt);";
-                cmd.Parameters.Clear();
-                cmd.Parameters.AddWithValue("@sid", showId);
-                cmd.Parameters.AddWithValue("@qr", qr);
-                cmd.Parameters.AddWithValue("@dt", DateTime.Now.ToString("s"));
-                cmd.ExecuteNonQuery();
-            }
-
-            cmd.CommandText = "UPDATE Shows SET sold = sold + @cnt WHERE id=@sid2;";
-            cmd.Parameters.Clear();
-            cmd.Parameters.AddWithValue("@cnt", totalCount);
-            cmd.Parameters.AddWithValue("@sid2", showId);
-            cmd.ExecuteNonQuery();
-
-            tx.Commit();
-
-            using var qrGen = new QRCodeGenerator();
-            using var data = qrGen.CreateQrCode(qrList[0], QRCodeGenerator.ECCLevel.Q);
-            using var qrImg = new QRCode(data);
-            pbQr.Image = qrImg.GetGraphic(5);
-
-            MessageBox.Show($"Koupeno celkem {totalCount} vstupenek.");
-            RefreshAvailability();
+            MessageBox.Show("QR kód vstupenky");
         }
     }
 }

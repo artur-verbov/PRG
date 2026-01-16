@@ -3,15 +3,15 @@
     partial class Form1
     {
         private System.ComponentModel.IContainer components = null;
-        private ComboBox cbCircuit;
-        private DateTimePicker dtTime;
-        private GroupBox gbType;
-        private RadioButton rbChild;
-        private RadioButton rbStudent;
-        private RadioButton rbAdult;
-        private Button btnBuy;
-        private PictureBox pbQr;
-        private ListView lvAvailability;
+        private System.Windows.Forms.ComboBox cbCircuit;
+        private System.Windows.Forms.DateTimePicker dtTime;
+        private System.Windows.Forms.Button btnBuy;
+        private System.Windows.Forms.PictureBox pbQr;
+        private System.Windows.Forms.ListView lvAvailability;
+
+        private System.Windows.Forms.NumericUpDown nudAdult;
+        private System.Windows.Forms.NumericUpDown nudChild;
+        private System.Windows.Forms.NumericUpDown nudStudent;
 
         protected override void Dispose(bool disposing)
         {
@@ -22,61 +22,128 @@
 
         private void InitializeComponent()
         {
-            this.cbCircuit = new ComboBox();
-            this.dtTime = new DateTimePicker();
-            this.gbType = new GroupBox();
-            this.rbChild = new RadioButton();
-            this.rbStudent = new RadioButton();
-            this.rbAdult = new RadioButton();
-            this.btnBuy = new Button();
-            this.pbQr = new PictureBox();
-            this.lvAvailability = new ListView();
+            this.cbCircuit = new System.Windows.Forms.ComboBox();
+            this.dtTime = new System.Windows.Forms.DateTimePicker();
+            this.btnBuy = new System.Windows.Forms.Button();
+            this.pbQr = new System.Windows.Forms.PictureBox();
+            this.lvAvailability = new System.Windows.Forms.ListView();
 
+            this.nudAdult = new System.Windows.Forms.NumericUpDown();
+            this.nudChild = new System.Windows.Forms.NumericUpDown();
+            this.nudStudent = new System.Windows.Forms.NumericUpDown();
+
+            ((System.ComponentModel.ISupportInitialize)(this.pbQr)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudAdult)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudChild)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStudent)).BeginInit();
             this.SuspendLayout();
-
-            this.cbCircuit.Items.AddRange(new object[] { "Okruh A", "Okruh B", "Okruh C" });
-            this.cbCircuit.SelectedIndex = 0;
+            // 
+            // cbCircuit
+            // 
+            this.cbCircuit.Items.AddRange(new object[] {
+            "Okruh A",
+            "Okruh B",
+            "Okruh C"});
             this.cbCircuit.Location = new System.Drawing.Point(20, 20);
-
-            this.dtTime.Format = DateTimePickerFormat.Custom;
+            this.cbCircuit.Name = "cbCircuit";
+            this.cbCircuit.Size = new System.Drawing.Size(121, 23);
+            this.cbCircuit.TabIndex = 0;
+            // 
+            // dtTime
+            // 
             this.dtTime.CustomFormat = "yyyy-MM-dd HH:00";
-            this.dtTime.ShowUpDown = true;
+            this.dtTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtTime.Location = new System.Drawing.Point(20, 60);
-            this.dtTime.Value = DateTime.Today.AddHours(10);
-            this.dtTime.MinDate = DateTime.Today.AddHours(10);
-            this.dtTime.MaxDate = DateTime.Today.AddHours(17);
+            this.dtTime.MaxDate = new System.DateTime(2025, 12, 12, 17, 0, 0, 0);
+            this.dtTime.MinDate = new System.DateTime(2025, 12, 12, 10, 0, 0, 0);
+            this.dtTime.Name = "dtTime";
+            this.dtTime.ShowUpDown = true;
+            this.dtTime.Size = new System.Drawing.Size(200, 23);
+            this.dtTime.TabIndex = 1;
+            this.dtTime.Value = new System.DateTime(2025, 12, 12, 10, 0, 0, 0);
+            // 
+            // NumericUpDowny
+            // 
+            this.nudAdult.Location = new System.Drawing.Point(20, 100);
+            this.nudAdult.Minimum = 0;
+            this.nudAdult.Maximum = 20;
+            this.nudAdult.Value = 1;
+            this.nudAdult.Size = new System.Drawing.Size(50, 23);
+            this.Controls.Add(this.nudAdult);
+            Label lblAdult = new Label();
+            lblAdult.Text = "Dospělí:";
+            lblAdult.Location = new System.Drawing.Point(80, 100);
+            lblAdult.AutoSize = true;
+            this.Controls.Add(lblAdult);
 
-            this.gbType.Text = "Typ vstupenky";
-            this.gbType.Location = new System.Drawing.Point(20, 100);
-            this.gbType.Size = new System.Drawing.Size(200, 120);
-            this.rbChild.Text = "Dětská"; this.rbChild.Location = new System.Drawing.Point(10, 20);
-            this.rbStudent.Text = "Studentská"; this.rbStudent.Location = new System.Drawing.Point(10, 50);
-            this.rbAdult.Text = "Dospělá"; this.rbAdult.Location = new System.Drawing.Point(10, 80);
-            this.rbAdult.Checked = true;
-            this.gbType.Controls.AddRange(new Control[] { rbChild, rbStudent, rbAdult });
+            this.nudChild.Location = new System.Drawing.Point(20, 130);
+            this.nudChild.Minimum = 0;
+            this.nudChild.Maximum = 20;
+            this.nudChild.Value = 0;
+            this.nudChild.Size = new System.Drawing.Size(50, 23);
+            this.Controls.Add(this.nudChild);
+            Label lblChild = new Label();
+            lblChild.Text = "Děti:";
+            lblChild.Location = new System.Drawing.Point(80, 130);
+            lblChild.AutoSize = true;
+            this.Controls.Add(lblChild);
 
+            this.nudStudent.Location = new System.Drawing.Point(20, 160);
+            this.nudStudent.Minimum = 0;
+            this.nudStudent.Maximum = 20;
+            this.nudStudent.Value = 0;
+            this.nudStudent.Size = new System.Drawing.Size(50, 23);
+            this.Controls.Add(this.nudStudent);
+            Label lblStudent = new Label();
+            lblStudent.Text = "Studenti:";
+            lblStudent.Location = new System.Drawing.Point(80, 160);
+            lblStudent.AutoSize = true;
+            this.Controls.Add(lblStudent);
+            // 
+            // btnBuy
+            // 
+            this.btnBuy.Location = new System.Drawing.Point(20, 200);
+            this.btnBuy.Name = "btnBuy";
+            this.btnBuy.Size = new System.Drawing.Size(75, 23);
+            this.btnBuy.TabIndex = 2;
             this.btnBuy.Text = "Koupit";
-            this.btnBuy.Location = new System.Drawing.Point(20, 230);
-            this.btnBuy.Click += new EventHandler(this.btnBuy_Click);
-
-
-            this.pbQr.Location = new System.Drawing.Point(260, 20);
+            this.btnBuy.UseVisualStyleBackColor = true;
+            this.btnBuy.Click += new System.EventHandler(this.btnBuy_Click);
+            // 
+            // pbQr
+            // 
+            this.pbQr.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pbQr.Location = new System.Drawing.Point(300, 20);
+            this.pbQr.Name = "pbQr";
             this.pbQr.Size = new System.Drawing.Size(200, 200);
-            this.pbQr.BorderStyle = BorderStyle.FixedSingle;
-
-
-
-            this.lvAvailability.Location = new System.Drawing.Point(20, 280);
-            this.lvAvailability.Size = new System.Drawing.Size(840, 260);
-            this.lvAvailability.View = View.Details;
-            this.lvAvailability.Columns.Add("Okruh", 200);
-            this.lvAvailability.Columns.Add("Čas", 200);
-            this.lvAvailability.Columns.Add("Volno", 120);
-
+            this.pbQr.TabIndex = 3;
+            this.pbQr.TabStop = false;
+            this.pbQr.Click += new System.EventHandler(this.pbQr_Click);
+            // 
+            // lvAvailability
+            // 
+            this.lvAvailability.Location = new System.Drawing.Point(20, 250);
+            this.lvAvailability.Name = "lvAvailability";
+            this.lvAvailability.Size = new System.Drawing.Size(840, 300);
+            this.lvAvailability.TabIndex = 4;
+            this.lvAvailability.UseCompatibleStateImageBehavior = false;
+            this.lvAvailability.View = System.Windows.Forms.View.Details;
+            // 
+            // Form1
+            // 
             this.ClientSize = new System.Drawing.Size(900, 600);
-            this.Controls.AddRange(new Control[] { cbCircuit, dtTime, gbType, btnBuy, pbQr, lvAvailability });
+            this.Controls.Add(this.cbCircuit);
+            this.Controls.Add(this.dtTime);
+            this.Controls.Add(this.btnBuy);
+            this.Controls.Add(this.pbQr);
+            this.Controls.Add(this.lvAvailability);
+            this.Name = "Form1";
             this.Text = "Prodej vstupenek";
-
+            this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pbQr)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudAdult)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudChild)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStudent)).EndInit();
             this.ResumeLayout(false);
         }
     }
