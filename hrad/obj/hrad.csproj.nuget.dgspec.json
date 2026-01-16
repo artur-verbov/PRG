@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "H:\\Programování 3\\PRG-master\\hrad\\hrad.csproj": {}
+    "H:\\3 E\\PRG\\PRG\\h\\hrad\\hrad\\hrad.csproj": {}
   },
   "projects": {
-    "H:\\Programování 3\\PRG-master\\hrad\\hrad.csproj": {
+    "H:\\3 E\\PRG\\PRG\\h\\hrad\\hrad\\hrad.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "H:\\Programování 3\\PRG-master\\hrad\\hrad.csproj",
+        "projectUniqueName": "H:\\3 E\\PRG\\PRG\\h\\hrad\\hrad\\hrad.csproj",
         "projectName": "hrad",
-        "projectPath": "H:\\Programování 3\\PRG-master\\hrad\\hrad.csproj",
-        "packagesPath": "C:\\Users\\havlinj\\.nuget\\packages\\",
-        "outputPath": "H:\\Programování 3\\PRG-master\\hrad\\obj\\",
+        "projectPath": "H:\\3 E\\PRG\\PRG\\h\\hrad\\hrad\\hrad.csproj",
+        "packagesPath": "C:\\Users\\verbovshchuka\\.nuget\\packages\\",
+        "outputPath": "H:\\3 E\\PRG\\PRG\\h\\hrad\\hrad\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\havlinj\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\verbovshchuka\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
