@@ -26,63 +26,36 @@ namespace TicketApp
             lvAvailability.Columns.Add("Cena", 80);
 
             AddImages();
+            UpdateAvailabilityStatus();
         }
 
         void AddImages()
         {
-            int w = 140;
-            int h = 120;
-            int s = 10;
-
-            int x = pbQr.Right + 20;
-            int y = pbQr.Top;
-
+            int w = 140, h = 120, s = 10;
+            int x = pbQr.Right + 20, y = pbQr.Top;
             string imgDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images");
 
-            PictureBox p1 = new PictureBox();
-            p1.Image = Image.FromFile(Path.Combine(imgDir, "download.jpg"));
-            p1.Size = new Size(w, h);
-            p1.Location = new Point(x, y);
-            p1.SizeMode = PictureBoxSizeMode.StretchImage;
-            p1.Cursor = Cursors.Hand;
-            Controls.Add(p1);
-            p1.Click += (a, b) => cbCircuit.SelectedItem = "Okruh A";
+            void AddPic(string file, string okruh, int offsetX)
+            {
+                PictureBox pb = new PictureBox();
+                pb.Image = Image.FromFile(Path.Combine(imgDir, file));
+                pb.Size = new Size(w, h);
+                pb.Location = new Point(x + offsetX, y);
+                pb.SizeMode = PictureBoxSizeMode.StretchImage;
+                pb.Cursor = Cursors.Hand;
+                pb.Click += (a, b) => cbCircuit.SelectedItem = okruh;
+                Controls.Add(pb);
 
-            Label l1 = new Label();
-            l1.Text = "Okruh A";
-            l1.AutoSize = true;
-            l1.Location = new Point(x + 40, y + h + 5);
-            Controls.Add(l1);
+                Label lbl = new Label();
+                lbl.Text = okruh;
+                lbl.AutoSize = true;
+                lbl.Location = new Point(x + offsetX + 40, y + h + 5);
+                Controls.Add(lbl);
+            }
 
-            PictureBox p2 = new PictureBox();
-            p2.Image = Image.FromFile(Path.Combine(imgDir, "download (1).jpg"));
-            p2.Size = new Size(w, h);
-            p2.Location = new Point(x + w + s, y);
-            p2.SizeMode = PictureBoxSizeMode.StretchImage;
-            p2.Cursor = Cursors.Hand;
-            Controls.Add(p2);
-            p2.Click += (a, b) => cbCircuit.SelectedItem = "Okruh B";
-
-            Label l2 = new Label();
-            l2.Text = "Okruh B";
-            l2.AutoSize = true;
-            l2.Location = new Point(x + w + s + 40, y + h + 5);
-            Controls.Add(l2);
-
-            PictureBox p3 = new PictureBox();
-            p3.Image = Image.FromFile(Path.Combine(imgDir, "download (2).jpg"));
-            p3.Size = new Size(w, h);
-            p3.Location = new Point(x + 2 * (w + s), y);
-            p3.SizeMode = PictureBoxSizeMode.StretchImage;
-            p3.Cursor = Cursors.Hand;
-            Controls.Add(p3);
-            p3.Click += (a, b) => cbCircuit.SelectedItem = "Okruh C";
-
-            Label l3 = new Label();
-            l3.Text = "Okruh C";
-            l3.AutoSize = true;
-            l3.Location = new Point(x + 2 * (w + s) + 40, y + h + 5);
-            Controls.Add(l3);
+            AddPic("download.jpg", "Okruh A", 0);
+            AddPic("download (1).jpg", "Okruh B", w + s);
+            AddPic("download (2).jpg", "Okruh C", 2 * (w + s));
         }
 
         private void btnBuy_Click(object sender, EventArgs e)
@@ -93,11 +66,11 @@ namespace TicketApp
                 return;
             }
 
-            int adultCount = (int)nudAdult.Value;
-            int childCount = (int)nudChild.Value;
-            int studentCount = (int)nudStudent.Value;
+            int adult = (int)nudAdult.Value;
+            int child = (int)nudChild.Value;
+            int student = (int)nudStudent.Value;
 
-            if (adultCount + childCount + studentCount == 0)
+            if (adult + child + student == 0)
             {
                 MessageBox.Show("Musíte vybrat alespoň jednu vstupenku!", "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -106,19 +79,18 @@ namespace TicketApp
             string okruh = cbCircuit.SelectedItem.ToString();
             string cas = dtTime.Value.ToString("yyyy-MM-dd HH:00");
 
-            for (int i = 0; i < adultCount; i++)
+            for (int i = 0; i < adult; i++)
                 AddTicket(okruh, cas, "Dospělá", 200);
-            for (int i = 0; i < childCount; i++)
+            for (int i = 0; i < child; i++)
                 AddTicket(okruh, cas, "Dětská", 100);
-            for (int i = 0; i < studentCount; i++)
+            for (int i = 0; i < student; i++)
                 AddTicket(okruh, cas, "Studentská", 150);
 
-            string lastType = studentCount > 0 ? "Studentská" :
-                              childCount > 0 ? "Dětská" : "Dospělá";
-            int lastPrice = lastType == "Dospělá" ? 200 :
-                            lastType == "Dětská" ? 100 : 150;
+            string lastType = student > 0 ? "Studentská" : child > 0 ? "Dětská" : "Dospělá";
+            int lastPrice = lastType == "Dospělá" ? 200 : lastType == "Dětská" ? 100 : 150;
 
             DrawQr(okruh, cas, lastType, lastPrice);
+            UpdateAvailabilityStatus();
         }
 
         private void AddTicket(string okruh, string cas, string typ, int cena)
@@ -134,7 +106,7 @@ namespace TicketApp
         {
             int pbSize = pbQr.Width;
             int modules = 21;
-            int maxQrSize = pbSize - 20; // немного отступа
+            int maxQrSize = pbSize - 20;
             int cellSize = maxQrSize / modules;
             int qrSize = cellSize * modules;
             int offset = (pbSize - qrSize) / 2;
@@ -143,20 +115,18 @@ namespace TicketApp
             using (Graphics g = Graphics.FromImage(bmp))
             {
                 g.Clear(Color.White);
-
                 Random rnd = new Random((okruh + cas + typ + cena).GetHashCode());
 
-                void DrawFinder(int startX, int startY)
+                void DrawFinder(int sx, int sy)
                 {
-                    int patternSize = 7;
-                    for (int x = 0; x < patternSize; x++)
-                        for (int y = 0; y < patternSize; y++)
+                    int sz = 7;
+                    for (int x = 0; x < sz; x++)
+                        for (int y = 0; y < sz; y++)
                         {
-                            bool black = (x == 0 || x == patternSize - 1 || y == 0 || y == patternSize - 1 ||
-                                          (x >= 2 && x <= 4 && y >= 2 && y <= 4));
+                            bool black = (x == 0 || x == sz - 1 || y == 0 || y == sz - 1 || (x >= 2 && x <= 4 && y >= 2 && y <= 4));
                             g.FillRectangle(black ? Brushes.Black : Brushes.White,
-                                offset + (startX + x) * cellSize,
-                                offset + (startY + y) * cellSize,
+                                offset + (sx + x) * cellSize,
+                                offset + (sy + y) * cellSize,
                                 cellSize, cellSize);
                         }
                 }
@@ -168,18 +138,19 @@ namespace TicketApp
                 for (int x = 0; x < modules; x++)
                     for (int y = 0; y < modules; y++)
                     {
-                        if ((x < 7 && y < 7) || (x >= modules - 7 && y < 7) || (x < 7 && y >= modules - 7))
-                            continue;
-
+                        if ((x < 7 && y < 7) || (x >= modules - 7 && y < 7) || (x < 7 && y >= modules - 7)) continue;
                         bool black = rnd.Next(2) == 0;
                         g.FillRectangle(black ? Brushes.Black : Brushes.White,
-                            offset + x * cellSize,
-                            offset + y * cellSize,
-                            cellSize, cellSize);
+                            offset + x * cellSize, offset + y * cellSize, cellSize, cellSize);
                     }
             }
-
             pbQr.Image = bmp;
+        }
+
+        private void UpdateAvailabilityStatus()
+        {
+            bool anyFree = lvAvailability.Items.Count > 0;
+            lblAvailability.Text = anyFree ? "Volná místa: ano" : "Volná místa: ne";
         }
 
         private void pbQr_Click(object sender, EventArgs e)
